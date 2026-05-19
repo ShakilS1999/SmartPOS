@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SmartPOS.API/SmartPOS.API.csproj" Id="67a0590c-d768-47fe-b3ea-85da3e31134c" />
+  <Project Path="SmartPOS.Application/SmartPOS.Application.csproj" Id="4ca45518-994c-4e07-8674-3da236617203" />
+  <Project Path="SmartPOS.Domain/SmartPOS.Domain.csproj" Id="77cfc8b9-6142-4e47-b87c-b50210a12a20" />
+  <Project Path="SmartPOS.Infrastructure/SmartPOS.Infrastructure.csproj" Id="c20bec7c-633d-428a-a8f4-704030d1e0b1" />
+</Solution>
