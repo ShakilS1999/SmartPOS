@@ -8,26 +8,26 @@ namespace SmartPOS.API.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class PurchaseController : ControllerBase
+    public class ReturnController : ControllerBase
     {
-        private readonly IPurchaseService _service;
+        private readonly IReturnService _service;
 
-        public PurchaseController(IPurchaseService service)
+        public ReturnController(IReturnService service)
         {
             _service = service;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(PurchaseDto dto)
+        public async Task<IActionResult> Create(ReturnDto dto)
         {
-            await _service.CreatePurchaseAsync(dto);
-            return Ok("Purchase Completed");
+            await _service.CreateReturnAsync(dto);
+            return Ok("Return Processed");
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _service.GetAllPurchasesAsync());
+            return Ok(await _service.GetAllReturnsAsync());
         }
     }
 }

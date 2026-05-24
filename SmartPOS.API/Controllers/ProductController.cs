@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SmartPOS.Application.Interfaces;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SmartPOS.Application.DTOs;
+using SmartPOS.Application.Interfaces;
 
 namespace SmartPOS.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _service;

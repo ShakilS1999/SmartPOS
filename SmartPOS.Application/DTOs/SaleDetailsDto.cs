@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
-namespace SmartPOS.Application.DTOs
+﻿namespace SmartPOS.Application.DTOs
 {
     public class SaleDetailsDto
     {
-        public string InvoiceNo { get; set; }
+        public int SaleId { get; set; }
+        public string InvoiceNo { get; set; } = string.Empty;
         public DateTime SaleDate { get; set; }
         public decimal GrandTotal { get; set; }
-
-        public List<SaleItemDetailsDto> Items { get; set; }
+        public decimal Discount { get; set; }
+        public decimal Tax { get; set; }
+        public decimal NetTotal { get; set; }
+        public string? CustomerName { get; set; }
+        public List<SaleItemDetailsDto> Items { get; set; } = new();
     }
 }

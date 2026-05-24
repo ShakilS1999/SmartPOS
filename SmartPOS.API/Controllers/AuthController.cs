@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SmartPOS.Application.DTOs;
 using SmartPOS.Application.Interfaces;
 
@@ -20,6 +21,14 @@ namespace SmartPOS.API.Controllers
         {
             var token = await _service.LoginAsync(dto.Username, dto.Password);
             return Ok(new { token });
+        }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+        {
+            await _service.ChangePasswordAsync(dto.Username, dto.OldPassword, dto.NewPassword);
+            return Ok("Password Changed");
         }
     }
 }

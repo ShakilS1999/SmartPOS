@@ -19,6 +19,9 @@ namespace SmartPOS.Infrastructure.Data
         public DbSet<Purchase> Purchases { get; set; }
 
         public DbSet<PurchaseItem> PurchaseItems { get; set; }
+        public DbSet<Return> Returns { get; set; }
+        public DbSet<ReturnItem> ReturnItems { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -57,6 +60,34 @@ namespace SmartPOS.Infrastructure.Data
             modelBuilder.Entity<PurchaseItem>()
                 .Property(p => p.TotalPrice)
                 .HasPrecision(18, 2);
+            modelBuilder.Entity<Return>()
+    .Property(r => r.RefundAmount)
+    .HasPrecision(18, 2);
+
+            modelBuilder.Entity<ReturnItem>()
+                .Property(r => r.UnitPrice)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<ReturnItem>()
+                .Property(r => r.TotalPrice)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Sale>()
+    .Property(s => s.Discount)
+    .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Sale>()
+                .Property(s => s.Tax)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Sale>()
+                .Property(s => s.NetTotal)
+                .HasPrecision(18, 2);
+
+
+
+
+
 
             base.OnModelCreating(modelBuilder);
         }

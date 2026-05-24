@@ -8,6 +8,9 @@ namespace SmartPOS.Application.DTOs
 {
     public class SaleDto
     {
-        public List<SaleItemDto> Items { get; set; }
+        public int? CustomerId { get; set; }
+        public decimal Discount { get; set; } = 0;
+        public decimal Tax { get; set; } = 0;
+        public List<SaleItemDto> Items { get; set; } = new();
     }
 }

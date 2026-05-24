@@ -92,6 +92,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IReturnService, ReturnService>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
 
 
 
@@ -119,5 +122,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Password Hash
 
 app.Run();

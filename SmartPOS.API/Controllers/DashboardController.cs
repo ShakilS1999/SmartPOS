@@ -1,41 +1,27 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SmartPOS.Infrastructure.Data;
+using SmartPOS.Application.DTOs;
+using SmartPOS.Application.Interfaces;
 
-namespace SmartPOS.Controllers
+namespace SmartPOS.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     [Authorize]
     public class DashboardController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IDashboardService _service;
 
-        public DashboardController(AppDbContext context)
+        public DashboardController(IDashboardService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
-        public IActionResult GetDashboard()
+        public async Task<IActionResult> GetDashboard()
         {
-            var totalProducts = _context.Products.Count();
-
-            var totalSales = _context.Sales.Count();
-
-            var totalRevenue = _context.SaleItems
-                .Sum(x => x.TotalPrice);
-
-            var totalProfit = _context.SaleItems
-                .Sum(x => x.Profit);
-
-            return Ok(new
-            {
-                totalProducts,
-                totalSales,
-                totalRevenue,
-                totalProfit
-            });
+            var data = await _service.GetDashboardDataAsync();
+            return Ok(data);
         }
     }
 }

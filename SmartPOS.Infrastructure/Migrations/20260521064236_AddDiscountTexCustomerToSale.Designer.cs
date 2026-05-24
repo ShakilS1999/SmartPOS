@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartPOS.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using SmartPOS.Infrastructure.Data;
 namespace SmartPOS.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260521064236_AddDiscountTexCustomerToSale")]
+    partial class AddDiscountTexCustomerToSale
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,12 +117,7 @@ namespace SmartPOS.Infrastructure.Migrations
                     b.Property<DateTime>("PurchaseDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("SupplierId")
-                        .HasColumnType("int");
-
                     b.HasKey("PurchaseId");
-
-                    b.HasIndex("SupplierId");
 
                     b.ToTable("Purchases");
                 });
@@ -158,69 +156,6 @@ namespace SmartPOS.Infrastructure.Migrations
                     b.ToTable("PurchaseItems");
                 });
 
-            modelBuilder.Entity("SmartPOS.Domain.Entities.Return", b =>
-                {
-                    b.Property<int>("ReturnId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReturnId"));
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("RefundAmount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("ReturnDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("SaleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ReturnId");
-
-                    b.HasIndex("SaleId");
-
-                    b.ToTable("Returns");
-                });
-
-            modelBuilder.Entity("SmartPOS.Domain.Entities.ReturnItem", b =>
-                {
-                    b.Property<int>("ReturnItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReturnItemId"));
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReturnId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("ReturnItemId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ReturnId");
-
-                    b.ToTable("ReturnItems");
-                });
-
             modelBuilder.Entity("SmartPOS.Domain.Entities.Sale", b =>
                 {
                     b.Property<int>("SaleId")
@@ -233,7 +168,6 @@ namespace SmartPOS.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Discount")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("GrandTotal")
@@ -245,14 +179,12 @@ namespace SmartPOS.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("NetTotal")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("SaleDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Tax")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("SaleId");
@@ -300,35 +232,6 @@ namespace SmartPOS.Infrastructure.Migrations
                     b.ToTable("SaleItems");
                 });
 
-            modelBuilder.Entity("SmartPOS.Domain.Entities.Supplier", b =>
-                {
-                    b.Property<int>("SupplierId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SupplierId"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SupplierName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SupplierId");
-
-                    b.ToTable("Suppliers");
-                });
-
             modelBuilder.Entity("SmartPOS.Domain.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -354,15 +257,6 @@ namespace SmartPOS.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SmartPOS.Domain.Entities.Purchase", b =>
-                {
-                    b.HasOne("SmartPOS.Domain.Entities.Supplier", "Supplier")
-                        .WithMany()
-                        .HasForeignKey("SupplierId");
-
-                    b.Navigation("Supplier");
-                });
-
             modelBuilder.Entity("SmartPOS.Domain.Entities.PurchaseItem", b =>
                 {
                     b.HasOne("SmartPOS.Domain.Entities.Product", "Product")
@@ -380,36 +274,6 @@ namespace SmartPOS.Infrastructure.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Purchase");
-                });
-
-            modelBuilder.Entity("SmartPOS.Domain.Entities.Return", b =>
-                {
-                    b.HasOne("SmartPOS.Domain.Entities.Sale", "Sale")
-                        .WithMany()
-                        .HasForeignKey("SaleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Sale");
-                });
-
-            modelBuilder.Entity("SmartPOS.Domain.Entities.ReturnItem", b =>
-                {
-                    b.HasOne("SmartPOS.Domain.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SmartPOS.Domain.Entities.Return", "Return")
-                        .WithMany("Items")
-                        .HasForeignKey("ReturnId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Return");
                 });
 
             modelBuilder.Entity("SmartPOS.Domain.Entities.Sale", b =>
@@ -441,11 +305,6 @@ namespace SmartPOS.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("SmartPOS.Domain.Entities.Purchase", b =>
-                {
-                    b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("SmartPOS.Domain.Entities.Return", b =>
                 {
                     b.Navigation("Items");
                 });

@@ -15,7 +15,6 @@ namespace SmartPOS.Infrastructure.Services
             _context = context;
         }
 
-        //Create Sale (Invoice)
         public async Task CreateSaleAsync(SaleDto dto)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -29,6 +28,9 @@ namespace SmartPOS.Infrastructure.Services
                 {
                     InvoiceNo = "INV-" + DateTime.Now.Ticks,
                     SaleDate = DateTime.Now,
+                    CustomerId = dto.CustomerId,
+                    Discount = dto.Discount,
+                    Tax = dto.Tax,
                     Items = new List<SaleItem>()
                 };
 
@@ -63,10 +65,10 @@ namespace SmartPOS.Infrastructure.Services
                 }
 
                 sale.GrandTotal = total;
+                sale.NetTotal = total - dto.Discount + dto.Tax;
 
                 await _context.Sales.AddAsync(sale);
                 await _context.SaveChangesAsync();
-
                 await transaction.CommitAsync();
             }
             catch
@@ -76,20 +78,26 @@ namespace SmartPOS.Infrastructure.Services
             }
         }
 
-        //Get Sale by Id (Invoice Details)
         public async Task<SaleDetailsDto> GetByIdAsync(int id)
         {
             var sale = await _context.Sales
                 .Include(s => s.Items)
                     .ThenInclude(i => i.Product)
+                .Include(s => s.Customer)
                 .Where(s => s.SaleId == id)
                 .Select(s => new SaleDetailsDto
                 {
+                    SaleId = s.SaleId,
                     InvoiceNo = s.InvoiceNo,
                     SaleDate = s.SaleDate,
                     GrandTotal = s.GrandTotal,
+                    Discount = s.Discount,
+                    Tax = s.Tax,
+                    NetTotal = s.NetTotal,
+                    CustomerName = s.Customer != null ? s.Customer.CustomerName : "Walk-in Customer",
                     Items = s.Items.Select(i => new SaleItemDetailsDto
                     {
+                        ProductId = i.ProductId,
                         ProductName = i.Product.ProductName,
                         Quantity = i.Quantity,
                         UnitPrice = i.UnitPrice,
@@ -100,20 +108,27 @@ namespace SmartPOS.Infrastructure.Services
 
             return sale;
         }
+
         public async Task<List<SaleDetailsDto>> GetAllSalesAsync()
         {
             return await _context.Sales
                 .Include(s => s.Items)
                     .ThenInclude(i => i.Product)
+                .Include(s => s.Customer)
                 .OrderByDescending(s => s.SaleDate)
                 .Select(s => new SaleDetailsDto
                 {
+                    SaleId = s.SaleId,
                     InvoiceNo = s.InvoiceNo,
                     SaleDate = s.SaleDate,
                     GrandTotal = s.GrandTotal,
-
+                    Discount = s.Discount,
+                    Tax = s.Tax,
+                    NetTotal = s.NetTotal,
+                    CustomerName = s.Customer != null ? s.Customer.CustomerName : "Walk-in Customer",
                     Items = s.Items.Select(i => new SaleItemDetailsDto
                     {
+                        ProductId = i.ProductId,
                         ProductName = i.Product.ProductName,
                         Quantity = i.Quantity,
                         UnitPrice = i.UnitPrice,

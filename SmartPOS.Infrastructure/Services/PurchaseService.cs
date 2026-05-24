@@ -1,4 +1,5 @@
-﻿using SmartPOS.Application.DTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using SmartPOS.Application.DTOs;
 using SmartPOS.Application.Interfaces;
 using SmartPOS.Domain.Entities;
 using SmartPOS.Infrastructure.Data;
@@ -27,6 +28,7 @@ namespace SmartPOS.Infrastructure.Services
                 {
                     InvoiceNo = "PUR-" + DateTime.Now.Ticks,
                     PurchaseDate = DateTime.Now,
+                    SupplierId = dto.SupplierId,
                     Items = new List<PurchaseItem>()
                 };
 
@@ -45,10 +47,7 @@ namespace SmartPOS.Infrastructure.Services
                     if (item.CostPrice <= 0)
                         throw new Exception("Invalid cost price");
 
-                    // STOCK INCREASE
                     product.StockQuantity += item.Quantity;
-
-                    // UPDATE COST PRICE
                     product.CostPrice = item.CostPrice;
 
                     var purchaseItem = new PurchaseItem
@@ -60,24 +59,45 @@ namespace SmartPOS.Infrastructure.Services
                     };
 
                     total += purchaseItem.TotalPrice;
-
                     purchase.Items.Add(purchaseItem);
                 }
 
                 purchase.GrandTotal = total;
 
                 await _context.Purchases.AddAsync(purchase);
-
                 await _context.SaveChangesAsync();
-
                 await transaction.CommitAsync();
             }
             catch
             {
                 await transaction.RollbackAsync();
-
                 throw;
             }
+        }
+
+        public async Task<List<PurchaseDetailsDto>> GetAllPurchasesAsync()
+        {
+            return await _context.Purchases
+                .Include(p => p.Items)
+                    .ThenInclude(i => i.Product)
+                .Include(p => p.Supplier)
+                .OrderByDescending(p => p.PurchaseDate)
+                .Select(p => new PurchaseDetailsDto
+                {
+                    PurchaseId = p.PurchaseId,
+                    InvoiceNo = p.InvoiceNo,
+                    PurchaseDate = p.PurchaseDate,
+                    GrandTotal = p.GrandTotal,
+                    SupplierName = p.Supplier != null ? p.Supplier.SupplierName : "Unknown",
+                    Items = p.Items.Select(i => new PurchaseItemDetailsDto
+                    {
+                        ProductName = i.Product.ProductName,
+                        Quantity = i.Quantity,
+                        CostPrice = i.CostPrice,
+                        TotalPrice = i.TotalPrice
+                    }).ToList()
+                })
+                .ToListAsync();
         }
     }
 }
