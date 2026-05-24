@@ -1,0 +1,22 @@
+<h2>Product List</h2>
+<button (click)="logout()">Logout</button>
+
+<table border="1" width="100%">
+
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let p of products">
+      <td>{{p.productId}}</td>
+      <td>{{p.productName}}</td>
+      <td>{{p.price}}</td>
+    </tr>
+  </tbody>
+
+</table>
