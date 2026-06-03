@@ -9,6 +9,8 @@
         public decimal Discount { get; set; }
         public decimal Tax { get; set; }
         public decimal NetTotal { get; set; }
+        public decimal PaidAmount { get; set; }
+        public decimal DueAmount { get; set; }
         public string? CustomerName { get; set; }
         public List<SaleItemDetailsDto> Items { get; set; } = new();
     }

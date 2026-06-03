@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SmartPOS.Application.DTOs
+﻿namespace SmartPOS.Application.DTOs
 {
     public class DashboardDto
     {
@@ -12,5 +6,9 @@ namespace SmartPOS.Application.DTOs
         public decimal TodaySales { get; set; }
         public int TotalOrders { get; set; }
         public int TotalProducts { get; set; }
+        public decimal ThisMonthSales { get; set; }
+        public int ThisMonthOrders { get; set; }
+        public decimal TotalProfit { get; set; }
+        public decimal TodayProfit { get; set; }
     }
 }

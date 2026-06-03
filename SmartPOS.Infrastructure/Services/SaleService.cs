@@ -66,6 +66,8 @@ namespace SmartPOS.Infrastructure.Services
 
                 sale.GrandTotal = total;
                 sale.NetTotal = total - dto.Discount + dto.Tax;
+                sale.PaidAmount = dto.PaidAmount;
+                sale.DueAmount = sale.NetTotal - dto.PaidAmount;
 
                 await _context.Sales.AddAsync(sale);
                 await _context.SaveChangesAsync();
@@ -94,6 +96,8 @@ namespace SmartPOS.Infrastructure.Services
                     Discount = s.Discount,
                     Tax = s.Tax,
                     NetTotal = s.NetTotal,
+                    PaidAmount = s.PaidAmount,
+                    DueAmount = s.DueAmount,
                     CustomerName = s.Customer != null ? s.Customer.CustomerName : "Walk-in Customer",
                     Items = s.Items.Select(i => new SaleItemDetailsDto
                     {
@@ -125,6 +129,8 @@ namespace SmartPOS.Infrastructure.Services
                     Discount = s.Discount,
                     Tax = s.Tax,
                     NetTotal = s.NetTotal,
+                    PaidAmount = s.PaidAmount,
+                    DueAmount = s.DueAmount,
                     CustomerName = s.Customer != null ? s.Customer.CustomerName : "Walk-in Customer",
                     Items = s.Items.Select(i => new SaleItemDetailsDto
                     {
