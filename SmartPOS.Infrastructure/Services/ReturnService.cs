@@ -21,6 +21,15 @@ namespace SmartPOS.Infrastructure.Services
 
             try
             {
+                if (dto == null)
+                    throw new Exception("Return data is required");
+
+                if (dto.SaleId <= 0)
+                    throw new Exception("Invalid sale");
+
+                if (dto.Items == null || !dto.Items.Any())
+                    throw new Exception("Return items required");
+
                 var sale = await _context.Sales
                     .Include(s => s.Items)
                     .FirstOrDefaultAsync(s => s.SaleId == dto.SaleId);
@@ -28,30 +37,57 @@ namespace SmartPOS.Infrastructure.Services
                 if (sale == null)
                     throw new Exception("Sale not found");
 
+                var groupedItems = dto.Items
+                    .GroupBy(i => i.ProductId)
+                    .Select(g => new ReturnItemDto
+                    {
+                        ProductId = g.Key,
+                        Quantity = g.Sum(x => x.Quantity)
+                    })
+                    .ToList();
+
                 var returnEntity = new Return
                 {
                     SaleId = dto.SaleId,
                     ReturnDate = DateTime.Now,
-                    Reason = dto.Reason,
+                    Reason = dto.Reason?.Trim() ?? string.Empty,
                     Items = new List<ReturnItem>()
                 };
 
                 decimal refundTotal = 0;
 
-                foreach (var item in dto.Items)
+                foreach (var item in groupedItems)
                 {
+                    if (item.ProductId <= 0)
+                        throw new Exception("Invalid product");
+
+                    if (item.Quantity <= 0)
+                        throw new Exception("Return quantity must be greater than 0");
+
                     var saleItem = sale.Items
                         .FirstOrDefault(i => i.ProductId == item.ProductId);
 
                     if (saleItem == null)
-                        throw new Exception($"Product not found in sale");
+                        throw new Exception("Product not found in sale");
 
-                    if (item.Quantity > saleItem.Quantity)
-                        throw new Exception($"Return quantity exceeds sold quantity");
+                    var alreadyReturnedQuantity = await _context.ReturnItems
+                        .Where(ri => ri.Return.SaleId == dto.SaleId && ri.ProductId == item.ProductId)
+                        .SumAsync(ri => (int?)ri.Quantity) ?? 0;
+
+                    var remainingReturnableQuantity = saleItem.Quantity - alreadyReturnedQuantity;
+
+                    if (remainingReturnableQuantity <= 0)
+                        throw new Exception("This product has already been fully returned");
+
+                    if (item.Quantity > remainingReturnableQuantity)
+                        throw new Exception($"Return quantity exceeds remaining returnable quantity. Remaining: {remainingReturnableQuantity}");
 
                     var product = await _context.Products.FindAsync(item.ProductId);
-                    if (product != null)
-                        product.StockQuantity += item.Quantity;
+
+                    if (product == null)
+                        throw new Exception($"Product not found: {item.ProductId}");
+
+                    product.StockQuantity += item.Quantity;
 
                     var returnItem = new ReturnItem
                     {
