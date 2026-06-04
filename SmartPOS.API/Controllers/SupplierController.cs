@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartPOS.Application.DTOs;
 using SmartPOS.Application.Interfaces;
@@ -7,7 +7,7 @@ namespace SmartPOS.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Admin,Manager")]
     public class SupplierController : ControllerBase
     {
         private readonly ISupplierService _service;

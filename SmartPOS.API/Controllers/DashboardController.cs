@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SmartPOS.Application.DTOs;
 using SmartPOS.Application.Interfaces;
 
 namespace SmartPOS.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Admin,Manager,Cashier")]
     public class DashboardController : ControllerBase
     {
         private readonly IDashboardService _service;

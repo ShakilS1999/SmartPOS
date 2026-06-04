@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartPOS.Application.DTOs;
 using SmartPOS.Application.Interfaces;
@@ -18,12 +18,14 @@ namespace SmartPOS.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Manager,Cashier")]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _service.GetAllAsync());
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,Manager,Cashier")]
         public async Task<IActionResult> GetById(int id)
         {
             var product = await _service.GetByIdAsync(id);
@@ -35,6 +37,7 @@ namespace SmartPOS.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create(ProductDto dto)
         {
             await _service.CreateAsync(dto);
@@ -42,6 +45,7 @@ namespace SmartPOS.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Update(int id, ProductDto dto)
         {
             if (id != dto.ProductId)
@@ -53,6 +57,7 @@ namespace SmartPOS.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Delete(int id)
         {
             await _service.DeleteAsync(id);
@@ -64,6 +69,7 @@ namespace SmartPOS.API.Controllers
         }
 
         [HttpGet("low-stock")]
+        [Authorize(Roles = "Admin,Manager,Cashier")]
         public async Task<IActionResult> GetLowStock()
         {
             var products = await _service.GetLowStockAsync();
