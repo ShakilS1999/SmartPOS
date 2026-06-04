@@ -23,6 +23,7 @@ namespace SmartPOS.Infrastructure.Services
                 ProductName = p.ProductName,
                 Barcode = p.Barcode,
                 Price = p.Price,
+                CostPrice = p.CostPrice,
                 StockQuantity = p.StockQuantity
             }).ToList();
         }
@@ -40,6 +41,7 @@ namespace SmartPOS.Infrastructure.Services
                 ProductName = product.ProductName,
                 Barcode = product.Barcode,
                 Price = product.Price,
+                CostPrice = product.CostPrice,
                 StockQuantity = product.StockQuantity
             };
         }
@@ -52,12 +54,19 @@ namespace SmartPOS.Infrastructure.Services
             if (dto.Price <= 0)
                 throw new Exception("Price must be greater than 0");
 
+            if (dto.CostPrice < 0)
+                throw new Exception("Cost price cannot be negative");
+
+            if (dto.CostPrice > dto.Price)
+                throw new Exception("Cost price cannot be greater than selling price");
+
             if (dto.StockQuantity < 0)
                 throw new Exception("Invalid stock quantity");
 
             var products = await _repo.GetAllAsync();
 
-            if (products.Any(x => x.Barcode == dto.Barcode))
+            if (!string.IsNullOrWhiteSpace(dto.Barcode) &&
+                products.Any(x => x.Barcode == dto.Barcode))
                 throw new Exception("Barcode already exists");
 
             var product = new Product
@@ -65,6 +74,7 @@ namespace SmartPOS.Infrastructure.Services
                 ProductName = dto.ProductName,
                 Barcode = dto.Barcode,
                 Price = dto.Price,
+                CostPrice = dto.CostPrice,
                 StockQuantity = dto.StockQuantity
             };
 
@@ -78,9 +88,31 @@ namespace SmartPOS.Infrastructure.Services
             if (product == null)
                 throw new Exception("Product not found");
 
+            if (string.IsNullOrWhiteSpace(dto.ProductName))
+                throw new Exception("Product name is required");
+
+            if (dto.Price <= 0)
+                throw new Exception("Price must be greater than 0");
+
+            if (dto.CostPrice < 0)
+                throw new Exception("Cost price cannot be negative");
+
+            if (dto.CostPrice > dto.Price)
+                throw new Exception("Cost price cannot be greater than selling price");
+
+            if (dto.StockQuantity < 0)
+                throw new Exception("Invalid stock quantity");
+
+            var products = await _repo.GetAllAsync();
+
+            if (!string.IsNullOrWhiteSpace(dto.Barcode) &&
+                products.Any(x => x.Barcode == dto.Barcode && x.ProductId != dto.ProductId))
+                throw new Exception("Barcode already exists");
+
             product.ProductName = dto.ProductName;
             product.Barcode = dto.Barcode;
             product.Price = dto.Price;
+            product.CostPrice = dto.CostPrice;
             product.StockQuantity = dto.StockQuantity;
 
             await _repo.UpdateAsync(product);
@@ -103,6 +135,7 @@ namespace SmartPOS.Infrastructure.Services
                     ProductName = p.ProductName,
                     Barcode = p.Barcode,
                     Price = p.Price,
+                    CostPrice = p.CostPrice,
                     StockQuantity = p.StockQuantity
                 })
                 .ToList();
