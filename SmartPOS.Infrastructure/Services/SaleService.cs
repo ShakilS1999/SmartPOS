@@ -21,8 +21,29 @@ namespace SmartPOS.Infrastructure.Services
 
             try
             {
-                if (dto == null || dto.Items == null || !dto.Items.Any())
+                if (dto == null)
+                    throw new Exception("Sale data is required");
+
+                if (dto.Items == null || !dto.Items.Any())
                     throw new Exception("Sale items required");
+
+                if (dto.Discount < 0)
+                    throw new Exception("Discount cannot be negative");
+
+                if (dto.Tax < 0)
+                    throw new Exception("Tax cannot be negative");
+
+                if (dto.PaidAmount < 0)
+                    throw new Exception("Paid amount cannot be negative");
+
+                if (dto.CustomerId.HasValue)
+                {
+                    var customerExists = await _context.Customers
+                        .AnyAsync(c => c.CustomerId == dto.CustomerId.Value);
+
+                    if (!customerExists)
+                        throw new Exception("Customer not found");
+                }
 
                 var sale = new Sale
                 {
@@ -38,13 +59,19 @@ namespace SmartPOS.Infrastructure.Services
 
                 foreach (var item in dto.Items)
                 {
+                    if (item.ProductId <= 0)
+                        throw new Exception("Invalid product");
+
+                    if (item.Quantity <= 0)
+                        throw new Exception("Quantity must be greater than 0");
+
                     var product = await _context.Products.FindAsync(item.ProductId);
 
                     if (product == null)
                         throw new Exception($"Product not found: {item.ProductId}");
 
-                    if (item.Quantity <= 0)
-                        throw new Exception("Quantity must be greater than 0");
+                    if (product.Price <= 0)
+                        throw new Exception($"{product.ProductName} price is invalid");
 
                     if (product.StockQuantity < item.Quantity)
                         throw new Exception($"{product.ProductName} stock not available");
@@ -64,8 +91,18 @@ namespace SmartPOS.Infrastructure.Services
                     sale.Items.Add(saleItem);
                 }
 
+                if (dto.Discount > total)
+                    throw new Exception("Discount cannot be greater than grand total");
+
                 sale.GrandTotal = total;
                 sale.NetTotal = total - dto.Discount + dto.Tax;
+
+                if (sale.NetTotal < 0)
+                    throw new Exception("Net total cannot be negative");
+
+                if (dto.PaidAmount > sale.NetTotal)
+                    throw new Exception("Paid amount cannot be greater than net total");
+
                 sale.PaidAmount = dto.PaidAmount;
                 sale.DueAmount = sale.NetTotal - dto.PaidAmount;
 
