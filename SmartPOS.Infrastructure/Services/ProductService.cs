@@ -27,20 +27,20 @@ namespace SmartPOS.Infrastructure.Services
             }).ToList();
         }
 
-        public async Task<ProductDto> GetByIdAsync(int id)
+        public async Task<ProductDto?> GetByIdAsync(int id)
         {
-            var p = await _repo.GetByIdAsync(id);
+            var product = await _repo.GetByIdAsync(id);
 
-            if (p == null)
+            if (product == null)
                 return null;
 
             return new ProductDto
             {
-                ProductId = p.ProductId,
-                ProductName = p.ProductName,
-                Barcode = p.Barcode,
-                Price = p.Price,
-                StockQuantity = p.StockQuantity
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                Barcode = product.Barcode,
+                Price = product.Price,
+                StockQuantity = product.StockQuantity
             };
         }
 

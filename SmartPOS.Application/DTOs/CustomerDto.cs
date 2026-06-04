@@ -10,8 +10,8 @@ namespace SmartPOS.Application.DTOs
     {
         public int CustomerId { get; set; }
 
-        public string CustomerName { get; set; }
+        public string CustomerName { get; set; } = null!;
 
-        public string Phone { get; set; }
+        public string Phone { get; set; } = null!;
     }
 }

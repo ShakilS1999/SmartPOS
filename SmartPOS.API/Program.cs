@@ -12,9 +12,9 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 QuestPDF.Settings.License = LicenseType.Community;
 
-
 // Add services
 builder.Services.AddControllers();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",
@@ -26,10 +26,9 @@ builder.Services.AddCors(options =>
         });
 });
 
-
 builder.Services.AddEndpointsApiExplorer();
 
-//Swagger + JWT Support
+// Swagger + JWT Support
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -53,12 +52,31 @@ builder.Services.AddSwaggerGen(options =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
 
-//JWT Authentication
+// JWT Authentication
+var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException("JWT key is missing. Configure Jwt:Key using user-secrets or environment variables.");
+}
+
+if (string.IsNullOrWhiteSpace(jwtIssuer))
+{
+    throw new InvalidOperationException("JWT issuer is missing. Configure Jwt:Issuer.");
+}
+
+if (string.IsNullOrWhiteSpace(jwtAudience))
+{
+    throw new InvalidOperationException("JWT audience is missing. Configure Jwt:Audience.");
+}
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
@@ -68,39 +86,30 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
 });
 
 builder.Services.AddAuthorization();
 
-//DI
+// DI
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<IPurchaseService, PurchaseService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
-
 builder.Services.AddScoped<IProfitService, ProfitService>();
-
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
-
 builder.Services.AddScoped<IAuthService, AuthService>();
-
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IReturnService, ReturnService>();
 builder.Services.AddScoped<ISupplierService, SupplierService>();
 
-
-
-//Database
+// Database
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -119,13 +128,9 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors("AllowAngular");
 
-// IMPORTANT ORDER
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-// Password Hash
-
 
 app.Run();

@@ -19,7 +19,7 @@ namespace SmartPOS.Infrastructure.Repositories
             return await _context.Products.ToListAsync();
         }
 
-        public async Task<Product> GetByIdAsync(int id)
+        public async Task<Product?> GetByIdAsync(int id)
         {
             return await _context.Products.FindAsync(id);
         }
@@ -39,6 +39,7 @@ namespace SmartPOS.Infrastructure.Repositories
         public async Task DeleteAsync(int id)
         {
             var product = await _context.Products.FindAsync(id);
+
             if (product != null)
             {
                 _context.Products.Remove(product);

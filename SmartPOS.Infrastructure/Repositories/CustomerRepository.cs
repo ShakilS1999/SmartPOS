@@ -19,7 +19,7 @@ namespace SmartPOS.Infrastructure.Repositories
             return await _context.Customers.ToListAsync();
         }
 
-        public async Task<Customer> GetByIdAsync(int id)
+        public async Task<Customer?> GetByIdAsync(int id)
         {
             return await _context.Customers.FindAsync(id);
         }
@@ -27,14 +27,12 @@ namespace SmartPOS.Infrastructure.Repositories
         public async Task AddAsync(Customer customer)
         {
             await _context.Customers.AddAsync(customer);
-
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Customer customer)
         {
             _context.Customers.Update(customer);
-
             await _context.SaveChangesAsync();
         }
 
@@ -45,7 +43,6 @@ namespace SmartPOS.Infrastructure.Repositories
             if (customer != null)
             {
                 _context.Customers.Remove(customer);
-
                 await _context.SaveChangesAsync();
             }
         }

@@ -80,7 +80,7 @@ namespace SmartPOS.Infrastructure.Services
             }
         }
 
-        public async Task<SaleDetailsDto> GetByIdAsync(int id)
+        public async Task<SaleDetailsDto?> GetByIdAsync(int id)
         {
             var sale = await _context.Sales
                 .Include(s => s.Items)

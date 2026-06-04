@@ -25,18 +25,18 @@ namespace SmartPOS.Infrastructure.Services
             }).ToList();
         }
 
-        public async Task<CustomerDto> GetByIdAsync(int id)
+        public async Task<CustomerDto?> GetByIdAsync(int id)
         {
-            var c = await _repo.GetByIdAsync(id);
+            var customer = await _repo.GetByIdAsync(id);
 
-            if (c == null)
+            if (customer == null)
                 return null;
 
             return new CustomerDto
             {
-                CustomerId = c.CustomerId,
-                CustomerName = c.CustomerName,
-                Phone = c.Phone
+                CustomerId = customer.CustomerId,
+                CustomerName = customer.CustomerName,
+                Phone = customer.Phone
             };
         }
 

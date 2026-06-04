@@ -33,21 +33,32 @@ namespace SmartPOS.Infrastructure.Services
             if (!isValid)
                 throw new Exception("Invalid credentials");
 
+            var jwtKey = _config["Jwt:Key"];
+            var jwtIssuer = _config["Jwt:Issuer"];
+            var jwtAudience = _config["Jwt:Audience"];
+
+            if (string.IsNullOrWhiteSpace(jwtKey))
+                throw new InvalidOperationException("JWT key is missing. Configure Jwt:Key using user-secrets or environment variables.");
+
+            if (string.IsNullOrWhiteSpace(jwtIssuer))
+                throw new InvalidOperationException("JWT issuer is missing. Configure Jwt:Issuer.");
+
+            if (string.IsNullOrWhiteSpace(jwtAudience))
+                throw new InvalidOperationException("JWT audience is missing. Configure Jwt:Audience.");
+
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["Jwt:Key"])
-            );
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
+                issuer: jwtIssuer,
+                audience: jwtAudience,
                 claims: claims,
                 expires: DateTime.Now.AddHours(8),
                 signingCredentials: creds
