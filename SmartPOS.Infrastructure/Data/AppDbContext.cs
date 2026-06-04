@@ -25,6 +25,23 @@ namespace SmartPOS.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
+                .HasIndex(p => p.Barcode)
+                .IsUnique()
+                .HasFilter("[Barcode] IS NOT NULL AND [Barcode] <> ''");
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+
+            modelBuilder.Entity<Sale>()
+                .HasIndex(s => s.InvoiceNo)
+                .IsUnique();
+
+            modelBuilder.Entity<Purchase>()
+                .HasIndex(p => p.InvoiceNo)
+                .IsUnique();
+
+            modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasPrecision(18, 2);
 
