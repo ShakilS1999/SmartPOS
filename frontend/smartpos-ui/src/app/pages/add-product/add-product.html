@@ -1,0 +1,43 @@
+<div class="add-product">
+
+  <h1>Add Product</h1>
+
+  <div class="form-group">
+    <label>Product Name</label>
+    <input type="text" [(ngModel)]="productName" placeholder="Enter product name" />
+  </div>
+
+  <div class="form-group">
+    <label>Barcode</label>
+    <div class="barcode-row">
+      <input type="text" [(ngModel)]="barcode" placeholder="Enter or generate barcode" />
+      <button class="generate-btn" (click)="generateBarcode()">Generate</button>
+    </div>
+  </div>
+
+  @if (generatedBarcode()) {
+    <div class="barcode-preview" id="barcode-print">
+      <p><strong>{{ productName }}</strong></p>
+      <svg id="barcode-svg"></svg>
+    </div>
+    <button class="print-btn" (click)="printBarcode()">🖨️ Print Barcode</button>
+  }
+
+  <div class="form-group">
+    <label>Selling Price</label>
+    <input type="number" [(ngModel)]="price" placeholder="Enter selling price" />
+  </div>
+
+  <div class="form-group">
+    <label>Cost Price</label>
+    <input type="number" [(ngModel)]="costPrice" placeholder="Enter cost price" />
+  </div>
+
+  <div class="form-group">
+    <label>Stock Quantity</label>
+    <input type="number" [(ngModel)]="stockQuantity" placeholder="Enter stock" />
+  </div>
+
+  <button class="save-btn" (click)="saveProduct()">Save Product</button>
+
+</div>

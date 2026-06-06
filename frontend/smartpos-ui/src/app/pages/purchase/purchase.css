@@ -1,0 +1,60 @@
+.purchase {
+  padding: 30px;
+}
+
+.form-section {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.supplier-row {
+  margin-bottom: 20px;
+}
+
+.supplier-row .form-group {
+  max-width: 400px;
+}
+
+.item-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.item-row select {
+  flex: 2;
+}
+
+.item-row input {
+  flex: 1;
+}
+
+.total-row {
+  margin-top: 15px;
+  font-size: 18px;
+  text-align: right;
+  padding: 10px;
+}
+
+.complete-btn {
+  margin-top: 10px;
+  background-color: #28a745;
+  font-size: 16px;
+  padding: 10px 24px;
+  float: right;
+}
+
+.complete-btn:hover {
+  background-color: #1e7e34;
+}
+
+.remove-btn {
+  background-color: #dc3545;
+}
+
+.remove-btn:hover {
+  background-color: #b02a37;
+}

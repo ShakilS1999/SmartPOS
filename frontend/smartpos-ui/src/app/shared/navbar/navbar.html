@@ -1,0 +1,23 @@
+<nav class="navbar">
+
+  <span class="brand">Smart POS</span>
+
+  <button class="menu-toggle" (click)="toggleMenu()">☰</button>
+
+  <div class="nav-links" [class.open]="menuOpen">
+    <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">Dashboard</a>
+    <a routerLink="/products" routerLinkActive="active" (click)="closeMenu()">Products</a>
+    <a routerLink="/sales" routerLinkActive="active" (click)="closeMenu()">Sales</a>
+    <a routerLink="/customers" routerLinkActive="active" (click)="closeMenu()">Customers</a>
+    <a routerLink="/purchase" routerLinkActive="active" (click)="closeMenu()">Purchase</a>
+    <a routerLink="/profit" routerLinkActive="active" (click)="closeMenu()">Profit</a>
+    <a routerLink="/suppliers" routerLinkActive="active" (click)="closeMenu()">Suppliers</a>
+    <a routerLink="/returns" routerLinkActive="active" (click)="closeMenu()">Returns</a>
+    @if (isAdmin()) {
+      <a routerLink="/users" routerLinkActive="active" (click)="closeMenu()">Users</a>
+    }
+    <a routerLink="/change-password" routerLinkActive="active" (click)="closeMenu()">Change Password</a>
+    <button (click)="logout()">Logout</button>
+  </div>
+
+</nav>

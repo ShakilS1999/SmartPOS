@@ -1,0 +1,113 @@
+<div class="purchase">
+
+  <h1>Purchase</h1>
+
+  <div class="form-section">
+
+    <h2>New Purchase</h2>
+
+    <div class="supplier-row">
+      <div class="form-group">
+        <label>Supplier (Optional)</label>
+        <select [(ngModel)]="selectedSupplierId">
+          <option value="0">Unknown Supplier</option>
+          @for (supplier of suppliers(); track supplier.supplierId) {
+            <option [value]="supplier.supplierId">
+              {{ supplier.supplierName }}
+            </option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="item-row">
+
+      <select [(ngModel)]="selectedProductId">
+        <option value="0" disabled>Select Product</option>
+        @for (product of products(); track product.productId) {
+          <option [value]="product.productId">
+            {{ product.productName }}
+          </option>
+        }
+      </select>
+
+      <input
+        type="number"
+        placeholder="Quantity"
+        [(ngModel)]="quantity"
+        min="1"
+      />
+
+      <input
+        type="number"
+        placeholder="Cost Price"
+        [(ngModel)]="costPrice"
+        min="0"
+      />
+
+      <button (click)="addToCart()">Add</button>
+
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Cost Price</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of cart(); track item.productId) {
+          <tr>
+            <td>{{ item.productName }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>৳ {{ item.costPrice }}</td>
+            <td>৳ {{ item.quantity * item.costPrice }}</td>
+            <td>
+              <button class="remove-btn" (click)="removeFromCart(item.productId)">
+                Remove
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (cart().length > 0) {
+      <div class="total-row">
+        <strong>Grand Total: ৳ {{ grandTotal() }}</strong>
+      </div>
+      <button class="complete-btn" (click)="completePurchase()">
+        Complete Purchase
+      </button>
+    }
+
+  </div>
+
+  <h2>Purchase History</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Invoice No</th>
+        <th>Supplier</th>
+        <th>Date</th>
+        <th>Grand Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (purchase of purchases(); track purchase.purchaseId) {
+        <tr>
+          <td>{{ purchase.invoiceNo }}</td>
+          <td>{{ purchase.supplierName }}</td>
+          <td>{{ purchase.purchaseDate | date:'dd/MM/yyyy' }}</td>
+          <td>৳ {{ purchase.grandTotal }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+</div>

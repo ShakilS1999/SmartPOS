@@ -1,0 +1,30 @@
+<div class="profit">
+
+  <h1>Profit Report</h1>
+
+  <div class="export-bar">
+    <button class="export-btn" (click)="exportExcel()">
+      📊 Export to Excel
+    </button>
+  </div>
+
+  <div class="card-container">
+
+    <div class="card green">
+      <h2>Total Profit</h2>
+      <p>৳ {{ totalProfit() }}</p>
+    </div>
+
+    <div class="card blue">
+      <h2>Today Profit</h2>
+      <p>৳ {{ todayProfit() }}</p>
+    </div>
+
+    <div class="card orange">
+      <h2>Total Sales</h2>
+      <p>{{ totalSales() }}</p>
+    </div>
+
+  </div>
+
+</div>

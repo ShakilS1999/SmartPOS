@@ -1,0 +1,61 @@
+<div class="customers">
+
+  <h1>Customers</h1>
+
+  <div class="form-section">
+
+    <h2>{{ isEditing ? 'Edit Customer' : 'Add Customer' }}</h2>
+
+    <div class="form-group">
+      <label>Customer Name</label>
+      <input type="text" [(ngModel)]="customerName" placeholder="Enter name" />
+    </div>
+
+    <div class="form-group">
+      <label>Phone</label>
+      <input type="text" [(ngModel)]="phone" placeholder="Enter phone" />
+    </div>
+
+    <button (click)="saveCustomer()">
+      {{ isEditing ? 'Update Customer' : 'Add Customer' }}
+    </button>
+
+    @if (isEditing) {
+      <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+    }
+
+  </div>
+
+  <div class="result-count">{{ customers().length }} customer(s) found</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (customer of paginatedCustomers(); track customer.customerId) {
+        <tr>
+          <td>{{ customer.customerId }}</td>
+          <td>{{ customer.customerName }}</td>
+          <td>{{ customer.phone }}</td>
+          <td>
+            <button (click)="editCustomer(customer)">Edit</button>
+            <button class="delete-btn" (click)="deleteCustomer(customer.customerId)">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    (pageChange)="currentPage.set($event)"
+  />
+
+</div>

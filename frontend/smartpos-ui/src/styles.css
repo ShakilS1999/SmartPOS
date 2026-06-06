@@ -1,0 +1,65 @@
+/* Mobile Responsive */
+@media (max-width: 768px) {
+
+  body {
+    font-size: 14px;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .card-container {
+    flex-direction: column;
+  }
+
+  .card {
+    width: 100% !important;
+  }
+
+  input, select {
+    width: 100%;
+  }
+
+  button {
+    width: auto;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-input {
+    max-width: 100% !important;
+    width: 100%;
+  }
+
+  .sale-options {
+    flex-direction: column;
+  }
+
+  .sale-item-row {
+    flex-direction: column;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .summary {
+    max-width: 100% !important;
+  }
+
+  .complete-btn {
+    float: none !important;
+    width: 100%;
+  }
+
+  .export-bar {
+    justify-content: flex-start;
+  }
+
+}

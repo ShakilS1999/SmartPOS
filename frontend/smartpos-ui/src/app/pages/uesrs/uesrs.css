@@ -1,0 +1,39 @@
+.users {
+  padding: 30px;
+}
+
+.form-section {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  max-width: 500px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.badge-admin {
+  background-color: #dc3545;
+  color: white;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.badge-cashier {
+  background-color: #007bff;
+  color: white;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+}
+
+.delete-btn:hover {
+  background-color: #b02a37;
+}

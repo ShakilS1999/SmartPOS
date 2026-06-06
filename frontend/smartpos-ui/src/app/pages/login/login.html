@@ -1,0 +1,48 @@
+<div class="login-container">
+
+  <div class="card shadow">
+    <div class="card-body p-4">
+
+      <h2 class="text-center mb-4">
+        <span class="text-primary">Smart POS</span>
+      </h2>
+
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter username"
+          [(ngModel)]="username"
+          [class.is-invalid]="submitted && !username"
+        />
+        @if (submitted && !username) {
+          <div class="invalid-feedback">Username is required</div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          placeholder="Enter password"
+          [(ngModel)]="password"
+          [class.is-invalid]="submitted && !password"
+        />
+        @if (submitted && !password) {
+          <div class="invalid-feedback">Password is required</div>
+        }
+      </div>
+
+      <button
+        class="btn btn-primary w-100"
+        (click)="login()"
+      >
+        Login
+      </button>
+
+    </div>
+  </div>
+
+</div>

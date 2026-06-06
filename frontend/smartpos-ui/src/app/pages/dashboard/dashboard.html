@@ -1,0 +1,88 @@
+<div class="dashboard">
+
+  <h1>Smart POS Dashboard</h1>
+
+  <h3 class="section-title">📊 Overview</h3>
+  <div class="card-container">
+
+    <div class="card blue">
+      <h2>Total Sales</h2>
+      <p>৳ {{ totalSales() }}</p>
+    </div>
+
+    <div class="card green">
+      <h2>Total Profit</h2>
+      <p>৳ {{ totalProfit() }}</p>
+    </div>
+
+    <div class="card orange">
+      <h2>Total Orders</h2>
+      <p>{{ totalOrders() }}</p>
+    </div>
+
+    <div class="card purple">
+      <h2>Total Products</h2>
+      <p>{{ totalProducts() }}</p>
+    </div>
+
+  </div>
+
+  <h3 class="section-title">📅 Today</h3>
+  <div class="card-container">
+
+    <div class="card blue-light">
+      <h2>Today Sales</h2>
+      <p>৳ {{ todaySales() }}</p>
+    </div>
+
+    <div class="card green-light">
+      <h2>Today Profit</h2>
+      <p>৳ {{ todayProfit() }}</p>
+    </div>
+
+  </div>
+
+  <h3 class="section-title">📆 This Month</h3>
+  <div class="card-container">
+
+    <div class="card teal">
+      <h2>Month Sales</h2>
+      <p>৳ {{ thisMonthSales() }}</p>
+    </div>
+
+    <div class="card teal">
+      <h2>Month Orders</h2>
+      <p>{{ thisMonthOrders() }}</p>
+    </div>
+
+  </div>
+
+  @if (lowStockProducts().length > 0) {
+    <div class="alert-section">
+      <h2>⚠️ Low Stock Alert ({{ lowStockProducts().length }} products)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Stock</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of lowStockProducts(); track product.productId) {
+            <tr>
+              <td>{{ product.productName }}</td>
+              <td>
+                <span class="badge-low">{{ product.stockQuantity }}</span>
+              </td>
+              <td>
+                <a [routerLink]="['/purchase']" class="buy-btn">Buy Now</a>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</div>

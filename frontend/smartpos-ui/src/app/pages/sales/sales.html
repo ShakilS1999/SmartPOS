@@ -1,0 +1,189 @@
+<div class="sales">
+
+  <h1>Sales</h1>
+
+  <div class="new-sale">
+
+    <h2>New Sale</h2>
+
+    <div class="barcode-section">
+      <label>🔍 Scan Barcode</label>
+      <input
+        type="text"
+        [(ngModel)]="barcodeInput"
+        (keyup.enter)="onBarcodeInput(barcodeInput)"
+        placeholder="Scan or type barcode here..."
+        class="barcode-input"
+        autofocus
+      />
+      <small>Physical scanner দিয়ে scan করুন অথবা barcode type করে Enter চাপুন</small>
+    </div>
+
+    <div class="sale-options">
+
+      <div class="option-group">
+        <label>Customer (Optional)</label>
+        <select [(ngModel)]="selectedCustomerId">
+          <option value="0">Walk-in Customer</option>
+          @for (customer of customers(); track customer.customerId) {
+            <option [value]="customer.customerId">
+              {{ customer.customerName }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="option-group">
+        <label>Discount (৳)</label>
+        <input type="number" [(ngModel)]="discount" min="0" />
+      </div>
+
+      <div class="option-group">
+        <label>Tax (৳)</label>
+        <input type="number" [(ngModel)]="tax" min="0" />
+      </div>
+
+    </div>
+
+    <div class="sale-item-row">
+
+      <select [(ngModel)]="selectedProductId">
+        <option value="0" disabled>Select Product</option>
+        @for (product of products(); track product.productId) {
+          <option [value]="product.productId">
+            {{ product.productName }} - ৳{{ product.price }}
+          </option>
+        }
+      </select>
+
+      <input
+        type="number"
+        placeholder="Quantity"
+        [(ngModel)]="quantity"
+        min="1"
+      />
+
+      <button (click)="addToCart()">Add to Cart</button>
+
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Unit Price</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of cart; track item.productId) {
+          <tr>
+            <td>{{ item.productName }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>৳ {{ item.unitPrice }}</td>
+            <td>৳ {{ item.quantity * item.unitPrice }}</td>
+            <td>
+              <button class="remove-btn" (click)="removeFromCart(item.productId)">Remove</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (cart.length > 0) {
+      <div class="summary">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>৳ {{ subTotal() }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Discount:</span>
+          <span>- ৳ {{ discount }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax:</span>
+          <span>+ ৳ {{ tax }}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Net Total:</span>
+          <span>৳ {{ netTotal() }}</span>
+        </div>
+        <div class="summary-row paid">
+          <span>Paid Amount:</span>
+          <input
+            type="number"
+            [(ngModel)]="paidAmount"
+            min="0"
+            [max]="netTotal()"
+            class="paid-input"
+          />
+        </div>
+        <div class="summary-row due">
+          <span>Due Amount:</span>
+          <span>৳ {{ dueAmount() }}</span>
+        </div>
+      </div>
+
+      <button class="complete-btn" (click)="completeSale()">
+        Complete Sale
+      </button>
+    }
+
+  </div>
+
+  <h2>Sale History</h2>
+
+  <div class="export-bar">
+    <button class="export-btn" (click)="exportExcel()">
+      📊 Export to Excel
+    </button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Invoice No</th>
+        <th>Customer</th>
+        <th>Date</th>
+        <th>Net Total</th>
+        <th>Paid</th>
+        <th>Due</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (sale of paginatedSales(); track sale.invoiceNo) {
+        <tr>
+          <td>{{ sale.invoiceNo }}</td>
+          <td>{{ sale.customerName }}</td>
+          <td>{{ sale.saleDate | date:'dd/MM/yyyy' }}</td>
+          <td>৳ {{ sale.netTotal }}</td>
+          <td>৳ {{ sale.paidAmount }}</td>
+          <td [class.text-danger]="sale.dueAmount > 0">
+            ৳ {{ sale.dueAmount }}
+          </td>
+          <td>
+            <button class="receipt-btn" (click)="viewReceipt(sale)">Receipt</button>
+            <button class="invoice-btn" (click)="downloadInvoice(sale.saleId)">PDF</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    (pageChange)="currentPage.set($event)"
+  />
+
+  @if (showReceipt()) {
+    <app-receipt-modal
+      [sale]="receiptData()"
+      (close)="showReceipt.set(false)"
+    />
+  }
+
+</div>

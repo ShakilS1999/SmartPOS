@@ -1,0 +1,88 @@
+@if (sale()) {
+  <div class="modal-overlay" (click)="close.emit()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+      <div class="receipt" id="receipt">
+
+        <div class="receipt-header">
+          <h2>Smart POS</h2>
+          <p>Your Trusted POS System</p>
+          <hr/>
+        </div>
+
+        <div class="receipt-info">
+          <div class="info-row">
+            <span>Invoice:</span>
+            <span>{{ sale().invoiceNo }}</span>
+          </div>
+          <div class="info-row">
+            <span>Date:</span>
+            <span>{{ sale().saleDate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="info-row">
+            <span>Customer:</span>
+            <span>{{ sale().customerName }}</span>
+          </div>
+        </div>
+
+        <hr/>
+
+        <table class="receipt-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of sale().items; track item.productName) {
+              <tr>
+                <td>{{ item.productName }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>৳{{ item.unitPrice }}</td>
+                <td>৳{{ item.totalPrice }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <hr/>
+
+        <div class="receipt-summary">
+          <div class="info-row">
+            <span>Subtotal:</span>
+            <span>৳ {{ sale().grandTotal }}</span>
+          </div>
+          <div class="info-row">
+            <span>Discount:</span>
+            <span>- ৳ {{ sale().discount }}</span>
+          </div>
+          <div class="info-row">
+            <span>Tax:</span>
+            <span>+ ৳ {{ sale().tax }}</span>
+          </div>
+          <div class="info-row total">
+            <span>Net Total:</span>
+            <span>৳ {{ sale().netTotal }}</span>
+          </div>
+        </div>
+
+        <hr/>
+
+        <div class="receipt-footer">
+          <p>Thank You for Shopping!</p>
+          <p>Please come again</p>
+        </div>
+
+      </div>
+
+      <div class="modal-buttons no-print">
+        <button class="print-btn" (click)="printReceipt()">🖨️ Print</button>
+        <button class="close-btn" (click)="close.emit()">Close</button>
+      </div>
+
+    </div>
+  </div>
+}

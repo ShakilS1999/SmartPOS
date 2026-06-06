@@ -1,0 +1,74 @@
+<div class="products">
+
+  <h1>Products</h1>
+
+  <div class="top-bar">
+    <button [routerLink]="['/add-product']">Add Product</button>
+
+    <input
+      type="text"
+      placeholder="Search by name or barcode..."
+      [ngModel]="searchText()"
+      (ngModelChange)="onSearch($event)"
+      class="search-input"
+    />
+  </div>
+
+
+<div class="export-bar">
+  <button class="export-btn" (click)="exportExcel()">
+    📊 Export to Excel
+  </button>
+</div>
+
+  <div class="result-count">
+    {{ filteredProducts().length }} product(s) found
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (product of paginatedProducts(); track product.productId) {
+        <tr>
+          <td>{{ product.productId }}</td>
+          <td>{{ product.productName }}</td>
+          <td>৳ {{ product.price }}</td>
+          <td>
+            <span [class]="product.stockQuantity <= 5 ? 'badge-low' : 'badge-ok'">
+              {{ product.stockQuantity }}
+            </span>
+          </td>
+          <td>
+            <button [routerLink]="['/edit-product', product.productId]">
+              Edit
+            </button>
+            <button class="delete-btn" (click)="deleteProduct(product.productId)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      }
+
+      @if (filteredProducts().length === 0) {
+        <tr>
+          <td colspan="5" class="no-result">No products found</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    (pageChange)="currentPage.set($event)"
+  />
+
+</div>

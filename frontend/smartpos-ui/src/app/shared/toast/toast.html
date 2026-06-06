@@ -1,0 +1,7 @@
+@if (toastService.visible()) {
+  <div class="toast-container">
+    <div class="toast-box" [ngClass]="'toast-' + toastService.type()">
+      {{ toastService.message() }}
+    </div>
+  </div>
+}

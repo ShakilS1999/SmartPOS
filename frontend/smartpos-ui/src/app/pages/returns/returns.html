@@ -1,0 +1,105 @@
+<div class="returns">
+
+  <h1>Return / Refund</h1>
+
+  <div class="form-section">
+
+    <h2>Process Return</h2>
+
+    <div class="form-group">
+      <label>Sale ID</label>
+      <div class="sale-search">
+        <input
+          type="number"
+          [(ngModel)]="saleId"
+          placeholder="Enter Sale ID"
+        />
+        <button (click)="loadSale()">Load Sale</button>
+      </div>
+    </div>
+
+    @if (saleDetails) {
+      <div class="sale-info">
+        <p><strong>Invoice:</strong> {{ saleDetails.invoiceNo }}</p>
+        <p><strong>Customer:</strong> {{ saleDetails.customerName }}</p>
+        <p><strong>Date:</strong> {{ saleDetails.saleDate | date:'dd/MM/yyyy' }}</p>
+        <p><strong>Net Total:</strong> ৳ {{ saleDetails.netTotal }}</p>
+      </div>
+
+      <div class="form-group">
+        <label>Reason</label>
+        <input
+          type="text"
+          [(ngModel)]="reason"
+          placeholder="Enter return reason"
+        />
+      </div>
+
+      <h3>Select Items to Return</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Sold Qty</th>
+            <th>Return Qty</th>
+            <th>Unit Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of saleDetails.items; track item.productName) {
+            <tr>
+              <td>{{ item.productName }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>
+                <input
+                  type="number"
+                  [(ngModel)]="returnQuantities[item.productName]"
+                  min="0"
+                  [max]="item.quantity"
+                  style="width: 80px"
+                />
+              </td>
+              <td>৳ {{ item.unitPrice }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <div class="refund-total">
+        <strong>Refund Amount: ৳ {{ calculateRefund() }}</strong>
+      </div>
+
+      <button class="return-btn" (click)="processReturn()">
+        Process Return
+      </button>
+    }
+
+  </div>
+
+  <h2>Return History</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Return ID</th>
+        <th>Invoice No</th>
+        <th>Date</th>
+        <th>Reason</th>
+        <th>Refund Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (ret of returns(); track ret.returnId) {
+        <tr>
+          <td>{{ ret.returnId }}</td>
+          <td>{{ ret.invoiceNo }}</td>
+          <td>{{ ret.returnDate | date:'dd/MM/yyyy' }}</td>
+          <td>{{ ret.reason }}</td>
+          <td>৳ {{ ret.refundAmount }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+</div>

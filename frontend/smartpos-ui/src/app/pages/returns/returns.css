@@ -1,0 +1,56 @@
+.returns {
+  padding: 30px;
+}
+
+.form-section {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.sale-search {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.sale-search input {
+  max-width: 200px;
+}
+
+.sale-info {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.sale-info p {
+  margin-bottom: 5px;
+}
+
+.refund-total {
+  margin-top: 15px;
+  font-size: 18px;
+  text-align: right;
+  padding: 10px;
+  background: #e8f5e9;
+  border-radius: 8px;
+}
+
+.return-btn {
+  margin-top: 15px;
+  background-color: #fd7e14;
+  font-size: 16px;
+  padding: 10px 24px;
+  float: right;
+}
+
+.return-btn:hover {
+  background-color: #e96b02;
+}
